@@ -102,3 +102,92 @@ updated_at 은 모델이 업데이트 될떄마다 자동으로 입력된다.
 이로써 TimestampedModel은 다른 모델들을 위한 base로 사용된다.
 
 ## creating the image model
+
+위에서 만든 TimeStampedModel를 상속받는 2개의 클래스를 만든다.
+2개의 클래스는 각각 이미지와 댓글을 저장하는 모델이 된다.
+
+```python
+class Image(TimeStampedModel):
+
+    file = models.ImageField()
+    location = models.CharField(max_length=140)
+    caption = models.TextField()
+
+class Comment(TimeStampedModel):
+
+    message = models.TextField()
+```
+
+## Explaining Model Relationships
+
+### one to many/ many to one
+
+대응 관계(relation)는 1대 N 또는 N대 1로 정의 되어 질 수 있다.
+
+ex) 한개의 사진에 여러개의 댓글을 다는 경우
+한명의 owner가 여러개의 글을 가지고 있는 경우
+
+아래의 고양이 예제를 살펴보자
+
+```python
+
+from django.db import models
+from . import Owner
+
+class Cat(models.Model):
+    name = models.CharField(max_length=30)
+    breed = models.CharField(max_length=20)
+    grumpy = models.BooleanField(default =False)
+    owner = models.ForeignKey(Owner,null=True)
+
+jon = Owner.objects.create(
+    name="Jon"
+    last_name="Doe"
+    age=78
+)
+
+bunns = Cat.objects.get(id=2)
+
+bunns.owner = jon
+jon.save()
+```
+
+여기서 bunns는 고양이이며, jon을 생성 후 주인으로 등록한다.
+이렇게 외래키를 사용하여 데이터베이스의 데이터 간의 관계를 만들 수 있다.
+
+### getting related objects
+
+장고는 자동으로 set이라고 불리는 클래스의 속성을 만든다.
+외래키를 가지고 있다면 외래키는 자동으로 주인 객체를 바라보게되며, 주인 모델은 새로운 속성을 갖게 된다. 이름은 cat_set(modelName_set)이된다.
+그러나 실제로 cat_set이라는 속성이 생성되지는 않는다.
+
+코드는 아래와 같다.
+
+```python
+jon = Owner.objects.get(pk=1)
+jon_cats = jon.cat_set.all()
+```
+
+### many to many relationship
+
+예를 들면 많은 유저가 다른 많은 유저를 팔로우 할 수 있다.
+이를 N 대 M 관계라고 한다.
+장고로 프로그래밍할때 다음과 같이 나타내어질 수 있다.
+
+```python
+class Owner(models.Model):
+    name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    age = models.IntegerField()
+    following = models.ManyToManyField('self')
+    followers = models.ManyToManyField('self')
+
+jon = Owner.objects.get(pk=1)
+pedro = Owner.objects.get(pk=2)
+jisu = Owner.objects.get(pk=3)
+
+jon.followers.add(jisu, pedro)
+
+```
+
+ManyToManyField와 add를 통해서 many To many 관계 작성이 가능하다.
