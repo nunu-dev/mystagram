@@ -97,14 +97,14 @@ class TimeStampedModel(model.Model):
 우리는 2 개의 필드를 만들었는데, create_at 은 모델이 생성되었을때 입력되고,
 updated_at 은 모델이 업데이트 될떄마다 자동으로 입력된다.
 
-또한 내부에 Meta 클래스를 생성하고, abstract를 true로 선언함으로써 이는 데이터베이스에 영항을 미치지 않는 추상 모델이된다.
+또한 내부에 Meta 클래스를 생성하고, abstract 를 true 로 선언함으로써 이는 데이터베이스에 영항을 미치지 않는 추상 모델이된다.
 
-이로써 TimestampedModel은 다른 모델들을 위한 base로 사용된다.
+이로써 TimestampedModel 은 다른 모델들을 위한 base 로 사용된다.
 
 ## creating the image model
 
-위에서 만든 TimeStampedModel를 상속받는 2개의 클래스를 만든다.
-2개의 클래스는 각각 이미지와 댓글을 저장하는 모델이 된다.
+위에서 만든 TimeStampedModel 를 상속받는 2 개의 클래스를 만든다.
+2 개의 클래스는 각각 이미지와 댓글을 저장하는 모델이 된다.
 
 ```python
 class Image(TimeStampedModel):
@@ -122,15 +122,14 @@ class Comment(TimeStampedModel):
 
 ### one to many/ many to one
 
-대응 관계(relation)는 1대 N 또는 N대 1로 정의 되어 질 수 있다.
+대응 관계(relation)는 1 대 N 또는 N 대 1 로 정의 되어 질 수 있다.
 
 ex) 한개의 사진에 여러개의 댓글을 다는 경우
-한명의 owner가 여러개의 글을 가지고 있는 경우
+한명의 owner 가 여러개의 글을 가지고 있는 경우
 
 아래의 고양이 예제를 살펴보자
 
 ```python
-
 from django.db import models
 from . import Owner
 
@@ -152,14 +151,14 @@ bunns.owner = jon
 jon.save()
 ```
 
-여기서 bunns는 고양이이며, jon을 생성 후 주인으로 등록한다.
+여기서 bunns 는 고양이이며, jon 을 생성 후 주인으로 등록한다.
 이렇게 외래키를 사용하여 데이터베이스의 데이터 간의 관계를 만들 수 있다.
 
 ### getting related objects
 
-장고는 자동으로 set이라고 불리는 클래스의 속성을 만든다.
+장고는 자동으로 set 이라고 불리는 클래스의 속성을 만든다.
 외래키를 가지고 있다면 외래키는 자동으로 주인 객체를 바라보게되며, 주인 모델은 새로운 속성을 갖게 된다. 이름은 cat_set(modelName_set)이된다.
-그러나 실제로 cat_set이라는 속성이 생성되지는 않는다.
+그러나 실제로 cat_set 이라는 속성이 생성되지는 않는다.
 
 코드는 아래와 같다.
 
@@ -187,7 +186,83 @@ pedro = Owner.objects.get(pk=2)
 jisu = Owner.objects.get(pk=3)
 
 jon.followers.add(jisu, pedro)
-
 ```
 
-ManyToManyField와 add를 통해서 many To many 관계 작성이 가능하다.
+ManyToManyField 와 add 를 통해서 many To many 관계 작성이 가능하다.
+
+## Registering the Models in the admin
+
+어드민 페이지에 우리가 생성한 모델들을 추가히기 위해 아래의 코드를 admin.py 에 추가한다.
+
+```python
+from django.contrib import admin
+from . import models
+
+# Register your models here.
+
+@admin.register(models.Image)
+class ImageAdmin(admin.ModelAdmin):
+    pass
+
+@admin.register(models.Like)
+class LikeAdmin(admin.ModelAdmin):
+    pass
+
+@admin.register(models.Comment)
+class CommentAdmin(admin.ModelAdmin):
+    pass
+```
+
+이 후, 다시 어드민 페이지에 접속하면 생성한 모델들이 추가 되어있다.
+
+## Customizing the Django Admin
+
+어드민 리스트에 출력되는 내용들을 추가할 때 아래의 코드와 같이 작성한다.
+
+```python
+@admin.register(models.Comment)
+class CommentAdmin(admin.ModelAdmin):
+
+    list_display = (
+        'message',
+        'creator',
+        'image',
+        'create_at',
+        'updated_at'
+    )
+```
+
+만약 특정한 속성값을 클릭했을때 편집으로 넘기기위해서는 아래와 같이 작성한다
+
+```python
+@admin.register(models.Image)
+class ImageAdmin(admin.ModelAdmin):
+
+    list_display_links= (
+        'location',
+    )
+```
+
+다음으로, 특정 속성으로 탐색하는 기능을 추가하고 싶으면, 아래의 코드를 작성한다.
+이때, 자동으로 서치바가 상단에 생성된다.
+
+```python
+@admin.register(models.Image)
+class ImageAdmin(admin.ModelAdmin):
+
+    search_fields = (
+        'location',
+    )
+```
+
+마지막으로 우측에 특정 속성에 대한 필터를 추가하기위해서는 아래의 코드를 작성한다.
+
+```python
+@admin.register(models.Image)
+class ImageAdmin(admin.ModelAdmin):
+
+list_filter = (
+        'location',
+        'creator'
+    )
+```
