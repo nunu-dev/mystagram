@@ -333,3 +333,5 @@ THIRD_PARTY_APPS = [
 - 따라서 장고 rest framework 가 갖고 있는 시리얼라이저는 json->파이썬, 파이썬->json 으로 변환하는 역할을 한다.
 
 어플리케이션 내에 serializers.py라는 파일을 생성한다.
+파일 이름은 장고에 영향을 미치므로 주의하자
+
