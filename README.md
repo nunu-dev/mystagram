@@ -328,10 +328,72 @@ THIRD_PARTY_APPS = [
 
 ## 시리얼라이저(serializer)
 
-- api는 json 과 일을 한다. 프런트에서 json 을 요구한다는 것이다.
+- api 는 json 과 일을 한다. 프런트에서 json 을 요구한다는 것이다.
 - 장고는 json 과 일을 하지 않는다. json 은 자바스크립트 기반이므로 파이썬 기반인 장고와는 다르게 생겼다.
 - 따라서 장고 rest framework 가 갖고 있는 시리얼라이저는 json->파이썬, 파이썬->json 으로 변환하는 역할을 한다.
 
-어플리케이션 내에 serializers.py라는 파일을 생성한다.
+어플리케이션 내에 serializers.py 라는 파일을 생성한다.
 파일 이름은 장고에 영향을 미치므로 주의하자
 
+serializers 에서는 모델들을 가져와서 meta class 에서 model 과 필드를 설정해준다.
+
+```py
+# serializers.py
+
+from rest_framework import serializers
+from . import models
+
+class ImageSerializer(serializers.Serializer):
+
+    class Meta:
+        model = models.Image
+        fields = '__all__'
+
+class CommentSerializer(serializers.Serializer):
+
+    class Meta:
+        model = models.Comment
+        fields = '__all__'
+
+class LikeSerializer(serializers.Serializer):
+
+    class Meta:
+        models = models.Like
+        fields = '__all__'
+```
+
+## View
+
+에쩨로 우리 DB 의 모든 이미지를 볼 수 있는 View 를 만들어 보자
+우선 view 위에 다음과 같은 import 문이 있는데,
+이는 템플릿을 사용하기 위한 import 문이므로 지우도록하자.
+
+```py
+from django.shortcuts import render
+```
+
+그리고 다음과 같은 코드를 추가한다.
+
+```py
+from rest_framework.view import APIView
+from rest_framework.response import Response
+from . import models, serializers
+
+class ListAllImages(APIView):
+
+    def get(self, request, format=None):
+
+        all_images = models.Image.objects.all()
+
+        serializer = serializers.ImageSerializer(all_images, many=True)
+
+        return Response(data=serializer.data)
+```
+
+우선 설치한 rest_framework 를 사용한다.
+get 를 선언하는데 request 와 format 을 인자로 받는다.
+format 은 xml 이나 json 이 들어갈수있으며, 디폴트 설정은 None 이다.
+앞서 만든 serializer 를 사용하여 python 오브젝트에서 json 으로 변환해준다.
+다만 인자가 1 개일 경우 serializer 는 단수로 인식하므로 many 인자를 True 로 지정한다.
+
+마지막으로 Response 에 담아 리턴하는데, serializers 를 거친 데이터는 serializers.data 에 저장되므로, 이를 인자로 전달한다.
