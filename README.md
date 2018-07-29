@@ -29,8 +29,8 @@ python manage.py runserver
 이를 위해 아래의 명령어를 입력하면 된다
 
 ```bash
-python manage.py migrate
 python manage.py makemigrations
+python manage.py migrate
 ```
 
 ### migate 과 makemigrations 의 차이점과 추가 명령어
@@ -265,4 +265,41 @@ list_filter = (
         'location',
         'creator'
     )
+```
+
+## Rest API 의 규칙
+
+- 동사를 사용하지 않는다(동사는 CRUD 에서 발생)
+- 명사를 사용한다
+
+```
+// bad
+${BASE_URL}/getAllDogs
+
+// good
+GET -> ${BASE_URL}/dogs
+POST -> ${BASE_URL}/dogs
+PUT -> ${BASE_URL}/dogs
+DELETE -> ${BASE_URL}/dogs
+
+/dogs
+GET -> /dogs/kung
+POST -> /dogs/kung (error - 이미 생성되었으므로)
+PUT -> /dogs/kung (kung이 있는 경우에는 사용할 수 있음)
+DELETE -> /dogs/kung (kung이 있는 경우에는 사용할 수 있음)
+
+// 변형
+GET -> dogs/search?color=brown
+
+GET /owners/nicolas/dogs -> List of all the dogs that nicolas has.
+POST /owners/nicolas/dogs -> Create a dog for Nicolas
+PUT /owners/nicolas/dogs -> Update all of Nicolas' dogs
+DELETE /owners/nicolas/dogs -> delete
+
+GET -> /dogs/search?color=brown
+GET -> /owners/nicolas/dogs/search?color=
+
+versioning
+/v1/dogs/search?color=brown
+/v2/dogs/search?color=brown
 ```
