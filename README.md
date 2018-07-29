@@ -303,3 +303,33 @@ versioning
 /v1/dogs/search?color=brown
 /v2/dogs/search?color=brown
 ```
+
+## django rest framework
+
+- 장고 rest api 를 만들기 위한 프레임워크
+- class, function, 파이썬 패키지등이 api 를 쉽게 만들어줌
+
+아래와 같은 키워드로 설치한다
+
+```bash
+pipenv shell
+pipenv install djangorestframework
+```
+
+config/settings/bash.py 에서 서드파티 앱 리스트를 갱신해준다
+
+```python
+THIRD_PARTY_APPS = [
+    '...',
+    'rest_framework',
+    '...',
+]
+```
+
+## 시리얼라이저(serializer)
+
+- api는 json 과 일을 한다. 프런트에서 json 을 요구한다는 것이다.
+- 장고는 json 과 일을 하지 않는다. json 은 자바스크립트 기반이므로 파이썬 기반인 장고와는 다르게 생겼다.
+- 따라서 장고 rest framework 가 갖고 있는 시리얼라이저는 json->파이썬, 파이썬->json 으로 변환하는 역할을 한다.
+
+어플리케이션 내에 serializers.py라는 파일을 생성한다.
