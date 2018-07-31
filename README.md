@@ -343,19 +343,19 @@ serializers 에서는 모델들을 가져와서 meta class 에서 model 과 필�
 from rest_framework import serializers
 from . import models
 
-class ImageSerializer(serializers.Serializer):
+class ImageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Image
         fields = '__all__'
 
-class CommentSerializer(serializers.Serializer):
+class CommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Comment
         fields = '__all__'
 
-class LikeSerializer(serializers.Serializer):
+class LikeSerializer(serializers.ModelSerializer):
 
     class Meta:
         models = models.Like
@@ -375,7 +375,7 @@ from django.shortcuts import render
 그리고 다음과 같은 코드를 추가한다.
 
 ```py
-from rest_framework.view import APIView
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from . import models, serializers
 
@@ -397,3 +397,20 @@ format 은 xml 이나 json 이 들어갈수있으며, 디폴트 설정은 None �
 다만 인자가 1 개일 경우 serializer 는 단수로 인식하므로 many 인자를 True 로 지정한다.
 
 마지막으로 Response 에 담아 리턴하는데, serializers 를 거친 데이터는 serializers.data 에 저장되므로, 이를 인자로 전달한다.
+
+## URL
+
+이제 view 를 만들었으니 URL 에 연결해보도록하자
+
+```py
+# config/urls.py
+urlpatterns = [
+    path("images/", include("mystagram.images.urls"), namespace='images'),
+]
+
+# images/urls.py
+app_name = "images"
+urlpatterns = [
+    path("all/", view=views.ListAllImages.as_view(), name="all_images"),
+]
+```
