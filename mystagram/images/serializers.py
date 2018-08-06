@@ -15,17 +15,18 @@ class LikeSerializer(serializers.ModelSerializer):
 
 class ImageSerializer(serializers.ModelSerializer):
 
+    comments = CommentSerializer(many=True)
+    likes = LikeSerializer(many=True)
+
     class Meta:
         model = models.Image
-
-        comment_set = CommentSerializer(many=True)
-        like_set = LikeSerializer(many=True)
 
         fields = (
             'id',
             'file',
             'location',
             'caption',
-            'comment_set'
+            'comments',
+            'likes'
         )
 
