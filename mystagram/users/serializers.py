@@ -4,7 +4,7 @@ from mystagram.images import serializers as images_serializers
 
 class UserProfileSerializer(serializers.ModelSerializer):
 
-    images = images_serializers.UserProfileSerializer(many=True)
+    images = images_serializers.CountImageSerializer(many=True)
 
     class Meta:
         model = models.User
