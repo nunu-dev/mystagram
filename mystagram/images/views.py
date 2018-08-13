@@ -115,3 +115,10 @@ class Comment(APIView):
         except models.Comment.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
+class Search(APIView):
+
+    def get(self, request, format=None):
+
+        hashtags = request.query_params.get('hashtags', None)
+
+        print(hashtags)
