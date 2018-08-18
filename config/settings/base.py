@@ -72,7 +72,8 @@ THIRD_PARTY_APPS = [
 LOCAL_APPS = [
     'mystagram.users.apps.UsersAppConfig',
     # Your stuff: custom apps go here
-    'mystagram.images.apps.ImagesConfig'
+    'mystagram.images.apps.ImagesConfig',
+    'mystagram.notifications.apps.NotificationsConfig'
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
