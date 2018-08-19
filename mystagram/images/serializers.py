@@ -2,6 +2,7 @@ from rest_framework import serializers
 from . import models
 from mystagram.users import models as user_models
 
+
 class SmallImageSerializer(serializers.ModelSerializer):
 
     """ Used for the notifications """
@@ -12,9 +13,10 @@ class SmallImageSerializer(serializers.ModelSerializer):
             'file',
         )
 
+
 class CountImageSerializer(serializers.ModelSerializer):
 
-    class Meta: 
+    class Meta:
         model = models.Image
         fields = (
             'id',
@@ -22,6 +24,7 @@ class CountImageSerializer(serializers.ModelSerializer):
             'comment_count',
             'like_count'
         )
+
 
 class FeedUserSerializer(serializers.ModelSerializer):
 
@@ -31,6 +34,7 @@ class FeedUserSerializer(serializers.ModelSerializer):
             'username',
             'profile_image'
         )
+
 
 class CommentSerializer(serializers.ModelSerializer):
 
@@ -43,6 +47,7 @@ class CommentSerializer(serializers.ModelSerializer):
             'message',
             'creator'
         )
+
 
 class LikeSerializer(serializers.ModelSerializer):
 
@@ -58,15 +63,31 @@ class ImageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Image
-
         fields = (
             'id',
             'file',
             'location',
             'caption',
             'comments',
-            'like_counts',
-            'creator'
+            'like_count',
+            'creator',
             'created_at'
         )
 
+
+class LikeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.Like
+        fields = (
+            'creator',
+        )
+
+class InputImageSerializer(serializers.ModelSerializer):
+     class Meta:
+        model = models.Image
+        fields = (
+            'file',
+            'location',
+            'caption',
+        )

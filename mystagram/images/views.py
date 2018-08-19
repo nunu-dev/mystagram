@@ -1,10 +1,11 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from mystagram.users import models as user_models
 from . import models, serializers
+from mystagram.users import models as user_models
 from mystagram.users import serializers as user_serializers
 from mystagram.notifications import views as notification_views
+
 
 class Feed(APIView):
 
@@ -17,7 +18,7 @@ class Feed(APIView):
         image_list = []
 
         for following_user in following_users:
-            
+
             user_images = following_user.images.all()[:2]
 
             for image in user_images:
@@ -27,14 +28,16 @@ class Feed(APIView):
         my_images = user.images.all()[:2]
 
         for image in my_images:
-            
+
             image_list.append(image)
 
-        sorted_list = sorted(image_list, key=lambda image:image.created_at, reverse=True)
+        sorted_list = sorted(
+            image_list, key=lambda image: image.created_at, reverse=True)
 
         serializer = serializers.ImageSerializer(sorted_list, many=True)
 
         return Response(serializer.data)
+
 
 class LikeImage(APIView):
 
@@ -48,7 +51,7 @@ class LikeImage(APIView):
 
         serializer = user_serializers.ListUserSerializer(users, many=True)
 
-        return Response(data=serializer.data, status= status.HTTP_200_OK)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, image_id, format=None):
 
@@ -60,24 +63,26 @@ class LikeImage(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         try:
-            preexisiting_like = models.Like.objects.create(
-                creator = user,
-                image = found_image
+            preexisiting_like = models.Like.objects.get(
+                creator=user,
+                image=found_image
             )
             return Response(status=status.HTTP_304_NOT_MODIFIED)
 
         except models.Like.DoesNotExist:
 
             new_like = models.Like.objects.create(
-                creator = user,
-                image = found_image
+                creator=user,
+                image=found_image
             )
-            
+
             new_like.save()
 
-            notification_views.create_norification(user, found_image.creator,'like', found_image)
+            notification_views.create_notification(
+                user, found_image.creator, 'like', found_image)
 
             return Response(status=status.HTTP_201_CREATED)
+
 
 class UnLikeImage(APIView):
 
@@ -86,22 +91,17 @@ class UnLikeImage(APIView):
         user = request.user
 
         try:
-            found_image = models.Image.objects.get(id=image_id)
-        except models.Image.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-        try:
-            preexisiting_like = models.Like.objects.create(
-                creator = user,
-                image = found_image
+            preexisiting_like = models.Like.objects.get(
+                creator=user,
+                image__id=image_id
             )
             preexisiting_like.delete()
+
             return Response(status=status.HTTP_204_NO_CONTENT)
 
         except models.Like.DoesNotExist:
 
             return Response(status=status.HTTP_304_NOT_MODIFIED)
-
 
 
 class CommentOnImage(APIView):
@@ -121,12 +121,15 @@ class CommentOnImage(APIView):
 
             serializer.save(creator=user, image=found_image)
 
-            notification_views.create_norification(user, found_image.creator, 'comment', found_image, serializer.data['message'])
+            notification_views.create_notification(
+                user, found_image.creator, 'comment', found_image, serializer.data['message'])
 
             return Response(data=serializer.data, status=status.HTTP_201_CREATED)
 
-        else :
+        else:
+
             return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class Comment(APIView):
 
@@ -137,9 +140,10 @@ class Comment(APIView):
         try:
             comment = models.Comment.objects.get(id=comment_id, creator=user)
             comment.delete()
-            return Response(status= status.HTTP_204_NO_CONTENT)
+            return Response(status=status.HTTP_204_NO_CONTENT)
         except models.Comment.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
 
 class Search(APIView):
 
@@ -147,11 +151,12 @@ class Search(APIView):
 
         hashtags = request.query_params.get('hashtags', None)
 
-        if hash is not None:
-         
+        if hashtags is not None:
+
             hashtags = hashtags.split(",")
 
-            images = models.Image.objects.filter(tags__name__in=hashtags).distinct()
+            images = models.Image.objects.filter(
+                tags__name__in=hashtags).distinct()
 
             serializer = serializers.CountImageSerializer(images, many=True)
 
@@ -161,6 +166,7 @@ class Search(APIView):
 
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
+
 class ModerateComments(APIView):
 
     def delete(self, request, image_id, comment_id, format=None):
@@ -168,14 +174,23 @@ class ModerateComments(APIView):
         user = request.user
 
         try:
-            comment_to_delete = models.Comment.objects.get(id=comment_id, image_id=image_id, image__creator = user)
+            comment_to_delete = models.Comment.objects.get(
+                id=comment_id, image__id=image_id, image__creator=user)
             comment_to_delete.delete()
         except models.Comment.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+
 class ImageDetail(APIView):
+
+    def find_own_image(self, image_id, user):
+        try:
+            image = models.Image.objects.get(id=image_id, creator=user)
+            return image
+        except models.Image.DoesNotExist:
+            return None
 
     def get(self, request, image_id, format=None):
 
@@ -189,3 +204,27 @@ class ImageDetail(APIView):
         serializer = serializers.ImageSerializer(image)
 
         return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+    def put(self, request, image_id, format=None):
+
+         user = request.user
+
+         image = self.find_own_image(image_id, user)
+
+         if image is None:
+
+             return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+         serializer = serializers.InputImageSerializer(
+
+            image, data=request.data, partial=True)
+
+         if serializer.is_valid():
+
+             serializer.save(creator=user)
+
+             return Response(data=serializer.data, status=status.HTTP_204_NO_CONTENT)
+
+         else:
+             
+             return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)

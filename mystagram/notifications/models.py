@@ -18,8 +18,7 @@ class Notification(image_models.TimeStampedModel):
     comment = models.TextField(null=True, blank=True)
 
     class Meta:
-        pass
-        # ordering = ['-created_at']
+        ordering = ['-created_at']
 
     def __str__(self):
         return 'From: {} - To:{}'.format(self.creator, self.to)

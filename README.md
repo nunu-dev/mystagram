@@ -87,14 +87,14 @@ name = models.CharField(_("Name of User"), blank=True, max_length=255)
 
 ```python
 class TimeStampedModel(model.Model):
-    create_at =  models.DateTimeField(auto_now_add=True)
+    created_at =  models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         abstract=True
 ```
 
-우리는 2 개의 필드를 만들었는데, create_at 은 모델이 생성되었을때 입력되고,
+우리는 2 개의 필드를 만들었는데, created_at 은 모델이 생성되었을때 입력되고,
 updated_at 은 모델이 업데이트 될떄마다 자동으로 입력된다.
 
 또한 내부에 Meta 클래스를 생성하고, abstract 를 true 로 선언함으로써 이는 데이터베이스에 영항을 미치지 않는 추상 모델이된다.
@@ -227,7 +227,7 @@ class CommentAdmin(admin.ModelAdmin):
         'message',
         'creator',
         'image',
-        'create_at',
+        'created_at',
         'updated_at'
     )
 ```

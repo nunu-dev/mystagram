@@ -20,7 +20,7 @@ class ImageAdmin(admin.ModelAdmin):
     )
 
     list_display=(
-        'create_at',
+        'created_at',
         'updated_at',
         'file',
         'location',
@@ -33,7 +33,7 @@ class LikeAdmin(admin.ModelAdmin):
     list_display = (
         'creator',
         'image',
-        'create_at',
+        'created_at',
         'updated_at',
     )
 
@@ -44,6 +44,6 @@ class CommentAdmin(admin.ModelAdmin):
         'message',
         'creator',
         'image',
-        'create_at',
+        'created_at',
         'updated_at',
     )
