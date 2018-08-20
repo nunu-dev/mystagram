@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.urls import include, path
+from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.views.generic import TemplateView
@@ -11,7 +12,8 @@ urlpatterns = [
     # Django Admin, use {% url 'admin:index' %}
     path(settings.ADMIN_URL, admin.site.urls),
     # User management
-    path("api-token-auth/", obtain_jwt_token),
+    url(r'^rest-auth/', include('rest_auth.urls')),
+    url(r'^rest-auth/registration/', include('rest_auth.registration.urls')),
     path(
         "users/",
         include("mystagram.users.urls", namespace="users"),
