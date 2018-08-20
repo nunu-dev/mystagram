@@ -207,24 +207,36 @@ class ImageDetail(APIView):
 
     def put(self, request, image_id, format=None):
 
-         user = request.user
+        user = request.user
 
-         image = self.find_own_image(image_id, user)
+        image = self.find_own_image(image_id, user)
 
-         if image is None:
+        if image is None:
 
-             return Response(status=status.HTTP_401_UNAUTHORIZED)
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
 
-         serializer = serializers.InputImageSerializer(
+        serializer = serializers.InputImageSerializer(image, data=request.data, partial=True)
 
-            image, data=request.data, partial=True)
+        if serializer.is_valid():
 
-         if serializer.is_valid():
+            serializer.save(creator=user)
 
-             serializer.save(creator=user)
+            return Response(data=serializer.data, status=status.HTTP_204_NO_CONTENT)
 
-             return Response(data=serializer.data, status=status.HTTP_204_NO_CONTENT)
+        else:
 
-         else:
-             
-             return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, image_id, format=None):
+
+        user = request.user
+
+        image = self.find_own_image(image_id, user)
+
+        if image is None:
+
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+        image.delete()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)

@@ -84,6 +84,7 @@ class LikeSerializer(serializers.ModelSerializer):
         )
 
 class InputImageSerializer(serializers.ModelSerializer):
+
      class Meta:
         model = models.Image
         fields = (
