@@ -203,7 +203,14 @@ module.exports = {
                             flexbox: 'no-2009',
                           }),
                         ],
+                        sourceMap:true,
                       },
+                    },
+                    {
+                      loader: require.resolve('sass-loader'),
+                      options: {
+                        sourceMap:true
+                      }
                     },
                   ],
                 },
