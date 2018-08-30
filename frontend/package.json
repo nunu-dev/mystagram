@@ -41,6 +41,7 @@
     "react-redux": "^5.0.7",
     "react-router-dom": "^4.3.1",
     "react-router-redux": "^5.0.0-alpha.9",
+    "reactotron-react-js": "^2.1.1",
     "redux": "^4.0.0",
     "redux-thunk": "^2.3.0",
     "resolve": "1.6.0",
@@ -66,6 +67,7 @@
     "extends": "react-app"
   },
   "devDependencies": {
+    "reactotron-redux": "^2.1.0",
     "redux-logger": "^3.0.6"
   }
 }
