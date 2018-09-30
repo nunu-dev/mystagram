@@ -1,5 +1,6 @@
 export const translations = {
     es: {
-        "Login in":"Iniciar Sesion"
+        "Login In":"Iniciar Sesion",
+        "About Us":"Sobes nosotros"
     }
 }
