@@ -1,4 +1,7 @@
 from rest_framework import serializers
+from rest_auth.registration.serializers import RegisterSerializer
+from allauth.account.adapter import get_adapter
+from allauth.account.utils import setup_user_email
 from . import models
 from mystagram.images import serializers as images_serializers
 
