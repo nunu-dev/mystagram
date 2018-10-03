@@ -7,6 +7,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     facebookLogin: access_token => {
       dispatch(userActions.facebookLogin(access_token));
     },
+    usernameLogin: (email, password) => {
+      dispatch(userActions.usernameLogin(email, password));
+    },
   };
 };
 export default connect(
