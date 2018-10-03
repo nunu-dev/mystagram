@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Navigation from './presenter';
 
 class Container extends Component {
-  redner() {
+  render() {
     return <Navigation />;
   }
 }
