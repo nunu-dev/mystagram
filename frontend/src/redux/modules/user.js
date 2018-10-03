@@ -2,7 +2,7 @@
 
 // actions
 
-const SAVE_TOKEN = "SAVE_TOKEN";
+const SAVE_TOKEN = 'SAVE_TOKEN';
 
 // action creators
 
@@ -17,10 +17,10 @@ function saveToken(token) {
 
 function facebookLogin(access_token) {
   return function(dispatch) {
-    fetch("/users/login/facebook/", {
-      method: "POST",
+    fetch('/users/login/facebook/', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         access_token
@@ -38,10 +38,10 @@ function facebookLogin(access_token) {
 
 function usernameLogin(username, password) {
   return function(dispatch) {
-    fetch("/rest-auth/login/", {
-      method: "POST",
+    fetch('/rest-auth/login/', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         username,
@@ -60,10 +60,10 @@ function usernameLogin(username, password) {
 
 function createAccount(username, password, email, name) {
   return function(dispatch) {
-    fetch("/rest-auth/registration/", {
-      method: "POST",
+    fetch('/rest-auth/registration/', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         username,
@@ -86,7 +86,8 @@ function createAccount(username, password, email, name) {
 // initial state
 
 const initialState = {
-  isLoggedIn: localStorage.getItem("jwt") ? true : false
+  isLoggedIn: localStorage.getItem('jwt') ? true : false,
+  token: localStorage.getItem('jwt')
 };
 
 // reducer
@@ -104,7 +105,7 @@ function reducer(state = initialState, action) {
 
 function applySetToken(state, action) {
   const { token } = action;
-  localStorage.setItem("jwt", token);
+  localStorage.setItem('jwt', token);
   return {
     ...state,
     isLoggedIn: true,
