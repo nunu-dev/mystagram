@@ -2,29 +2,29 @@
 
 // actions
 
-const SAVE_TOKEN = 'SAVE_TOKEN';
+const SAVE_TOKEN = "SAVE_TOKEN";
 
-// action creator
+// action creators
 
 function saveToken(token) {
   return {
     type: SAVE_TOKEN,
-    token,
+    token
   };
 }
 
 // API actions
 
 function facebookLogin(access_token) {
-  return dispatch => {
-    fetch('/users/logins/facebook', {
-      method: 'POST',
+  return function(dispatch) {
+    fetch("/users/login/facebook/", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        access_token,
-      }),
+        access_token
+      })
     })
       .then(response => response.json())
       .then(json => {
@@ -32,21 +32,21 @@ function facebookLogin(access_token) {
           dispatch(saveToken(json.token));
         }
       })
-      .catch(error => console.log(error));
+      .catch(err => console.log(err));
   };
 }
 
 function usernameLogin(username, password) {
   return function(dispatch) {
-    fetch('rest-auth/login/', {
-      method: 'POST',
+    fetch("/rest-auth/login/", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({
         username,
-        password,
-      }),
+        password
+      })
     })
       .then(response => response.json())
       .then(json => {
@@ -54,50 +54,39 @@ function usernameLogin(username, password) {
           dispatch(saveToken(json.token));
         }
       })
-      .catch(error => console.log(error));
-  };
-}
-
-// reducer functions
-
-function applySetToken(state, action) {
-  const { token } = action;
-  localStorage.setItem('jwt', token);
-  return {
-    ...state,
-    isLoggedIn: true,
-    token,
+      .catch(err => console.log(err));
   };
 }
 
 function createAccount(username, password, email, name) {
   return function(dispatch) {
-    fetch('/rest-auth/registration/', {
-      method: 'POST',
+    fetch("/rest-auth/registration/", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({
         username,
         password1: password,
         password2: password,
         email,
-        name,
-      }),
+        name
+      })
     })
       .then(response => response.json())
       .then(json => {
         if (json.token) {
           dispatch(saveToken(json.token));
         }
-      });
+      })
+      .catch(err => console.log(err));
   };
 }
 
 // initial state
 
 const initialState = {
-  isLoggedIn: localStorage.getItem('jwt') ? true : false,
+  isLoggedIn: localStorage.getItem("jwt") ? true : false
 };
 
 // reducer
@@ -111,16 +100,28 @@ function reducer(state = initialState, action) {
   }
 }
 
+// reducer functions
+
+function applySetToken(state, action) {
+  const { token } = action;
+  localStorage.setItem("jwt", token);
+  return {
+    ...state,
+    isLoggedIn: true,
+    token: token
+  };
+}
+
 // exports
 
 const actionCreators = {
   facebookLogin,
   usernameLogin,
-  createAccount,
+  createAccount
 };
 
 export { actionCreators };
 
-// reducer export
+// export reducer by default
 
 export default reducer;

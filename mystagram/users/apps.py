@@ -2,7 +2,7 @@ from django.apps import AppConfig
 
 
 class UsersAppConfig(AppConfig):
-    name = 'nomadgram.users'
+    name = 'mystagram.users'
     verbose_name = "Users"
 
     def ready(self):
