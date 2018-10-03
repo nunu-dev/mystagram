@@ -1,12 +1,16 @@
-import React, { Component } from "react";
-import SignupForm from "./presenter";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import SignupForm from './presenter';
 
 class Container extends Component {
   state = {
-    email: "",
-    fullName: "",
-    username: "",
-    password: ""
+    email: '',
+    fullName: '',
+    username: '',
+    password: '',
+  };
+  static propsTypes = {
+    facebookLogin: PropTypes.func.isRequired,
   };
   render() {
     const { email, fullName, username, password } = this.state;
@@ -23,16 +27,19 @@ class Container extends Component {
     );
   }
   _handleInputChange = event => {
-    const { target: { value, name } } = event;
+    const {
+      target: { value, name },
+    } = event;
     this.setState({
-      [name]: value
+      [name]: value,
     });
   };
   _handleSubmit = event => {
     event.preventDefault();
   };
   _handleFacebookLogin = response => {
-    console.log(response);
+    const { facebookLogin } = this.props;
+    facebookLogin(response.assessToken);
   };
 }
 

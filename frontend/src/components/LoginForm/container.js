@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import LoginForm from './presenter';
 
 // const Container = props => <LoginForm {...props} />;
@@ -6,7 +7,10 @@ import LoginForm from './presenter';
 class Container extends Component {
   state = {
     username: '',
-    password: ''
+    password: '',
+  };
+  static propTypes = {
+    facebookLogin: PropTypes.func.isRequired,
   };
   render() {
     const { username, password } = this.state;
@@ -22,10 +26,10 @@ class Container extends Component {
   }
   _handleInputChange = event => {
     const {
-      target: { value, name }
+      target: { value, name },
     } = event;
     this.setState({
-      [name]: value
+      [name]: value,
     });
   };
   _handleSubmit = event => {
@@ -33,7 +37,8 @@ class Container extends Component {
     // redux will be here
   };
   _handleFacebookLogin = response => {
-    console.log(response);
+    const { facebookLogin } = this.props;
+    facebookLogin(response.assessToken);
   };
 }
 
