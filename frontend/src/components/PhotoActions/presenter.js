@@ -1,7 +1,7 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import Ionicon from 'react-ionicons';
-import styles from './styles.scss';
+import React from "react";
+import PropTypes from "prop-types";
+import Ionicon from "react-ionicons";
+import styles from "./styles.scss";
 
 const PhotoActions = (props, context) => (
   <div>
@@ -14,18 +14,18 @@ const PhotoActions = (props, context) => (
       </span>
     </div>
     <span>
-      {props.number}{' '}
-      {props.number === 1 ? context.t('like') : context.t('likes')}
+      {props.number}{" "}
+      {props.number === 1 ? context.t("like") : context.t("likes")}
     </span>
   </div>
 );
 
-PhotoActions.contextTypes = {
-  t: PropTypes.func.isRequired
+PhotoActions.propTypes = {
+  number: PropTypes.number.isRequired
 };
 
-PhotoActions.PropTypes = {
-  number: PropTypes.number.isRequired
+PhotoActions.contextTypes = {
+  t: PropTypes.func.isRequired
 };
 
 export default PhotoActions;

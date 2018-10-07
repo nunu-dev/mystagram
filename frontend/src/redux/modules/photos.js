@@ -1,14 +1,15 @@
 // imports
 
-import { actionCreators as userActions } from "redux/modules/user";
+import { actionCreators as userActions } from 'redux/modules/user';
 
 // actions
 
-const SET_FEED = "SET_FEED";
+const SET_FEED = 'SET_FEED';
 
 // action creators
 
 function setFeed(feed) {
+  console.log('feed:', feed);
   return {
     type: SET_FEED,
     feed
@@ -19,8 +20,10 @@ function setFeed(feed) {
 
 function getFeed() {
   return (dispatch, getState) => {
-    const { user: { token } } = getState();
-    fetch("/images/", {
+    const {
+      user: { token }
+    } = getState();
+    fetch('/images/', {
       headers: {
         Authorization: `JWT ${token}`
       }
