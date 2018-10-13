@@ -4,6 +4,8 @@ from rest_framework import status
 from . import models, serializers
 
 # Create your views here.
+
+
 class Notifications(APIView):
 
     def get(self, request, format=None):
@@ -16,14 +18,15 @@ class Notifications(APIView):
 
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
-def create_norification(creator, to, notification_type, image = None, comment= None):
-    
+
+def create_notification(creator, to, notification_type, image=None, comment=None):
+
     notification = models.Notification.objects.create(
-        creator = creator,
-        to = to,
-        notification_type = notification_type,
-        image= image,
-        comment = comment
+        creator=creator,
+        to=to,
+        notification_type=notification_type,
+        image=image,
+        comment=comment
     )
 
     notification.save()

@@ -11,7 +11,6 @@ const UNLIKE_PHOTO = 'UNLIKE_PHOTO';
 // action creators
 
 function setFeed(feed) {
-  console.log('feed:', feed);
   return {
     type: SET_FEED,
     feed
@@ -50,14 +49,51 @@ function getFeed() {
         }
         return response.json();
       })
-      .then(json => dispatch(setFeed(json)));
+      .then(json => {
+        dispatch(setFeed(json));
+      });
   };
 }
 
 function likePhoto(photoId) {
   return (dispatch, getState) => {
     dispatch(doLikePhoto(photoId));
-    fetch(`/images`);
+    const {
+      user: { token }
+    } = getState();
+    fetch(`/images/${photoId}/likes/`, {
+      method: 'POST',
+      headers: {
+        Authorization: `JWT ${token}`
+      }
+    }).then(response => {
+      if (response.status === 401) {
+        dispatch(userActions.logout());
+      } else if (!response.ok) {
+        dispatch(doUnlikePhoto(photoId));
+      }
+    });
+  };
+}
+
+function unlikePhoto(photoId) {
+  return (dispatch, getState) => {
+    dispatch(doUnlikePhoto(photoId));
+    const {
+      user: { token }
+    } = getState();
+    fetch(`/images/${photoId}/unlikes/`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `JWT ${token}`
+      }
+    }).then(response => {
+      if (response.status === 401) {
+        dispatch(userActions.logout());
+      } else if (!response.ok) {
+        dispatch(doLikePhoto(photoId));
+      }
+    });
   };
 }
 
@@ -117,7 +153,9 @@ function applyUnlikePhoto(state, action) {
 // Exports
 
 const actionCreators = {
-  getFeed
+  getFeed,
+  likePhoto,
+  unlikePhoto
 };
 
 export { actionCreators };
