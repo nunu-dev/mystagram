@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import FeedPhoto from './presenter';
+import React, { Component } from "react";
+import FeedPhoto from "./presenter";
 
 class Container extends Component {
   state = {
@@ -16,11 +16,13 @@ class Container extends Component {
     );
   }
   _openLikes = () => {
-    const { getPhotoLikes } = this.props;
+    const { getPhotoLikes, likes } = this.props;
     this.setState({
       seeingLikes: true
     });
-    getPhotoLikes();
+    if (!likes) {
+      getPhotoLikes();
+    }
   };
   _closeLikes = () => {
     this.setState({

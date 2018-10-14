@@ -4,7 +4,6 @@
 
 const SAVE_TOKEN = 'SAVE_TOKEN';
 const LOGOUT = 'LOGOUT';
-const SET_USER_LIST = 'SET_USER_LIST';
 
 // action creators
 
@@ -21,17 +20,10 @@ function logout() {
   };
 }
 
-function setUserList(userList) {
-  return {
-    type: SET_USER_LIST,
-    userList
-  };
-}
-
 // API actions
 
 function facebookLogin(access_token) {
-  return function(dispatch) {
+  return dispatch => {
     fetch('/users/login/facebook/', {
       method: 'POST',
       headers: {
@@ -52,7 +44,7 @@ function facebookLogin(access_token) {
 }
 
 function usernameLogin(username, password) {
-  return function(dispatch) {
+  return dispatch => {
     fetch('/rest-auth/login/', {
       method: 'POST',
       headers: {
@@ -74,7 +66,7 @@ function usernameLogin(username, password) {
 }
 
 function createAccount(username, password, email, name) {
-  return function(dispatch) {
+  return dispatch => {
     fetch('/rest-auth/registration/', {
       method: 'POST',
       headers: {
@@ -98,28 +90,6 @@ function createAccount(username, password, email, name) {
   };
 }
 
-function getPhotoLikes(photoId) {
-  return (dispatch, getState) => {
-    const {
-      user: { token }
-    } = getState();
-    fetch(`/images/${photoId}/likes/`, {
-      headers: {
-        Authorization: `JWT ${token}`
-      }
-    })
-      .then(response => {
-        // if (response.status === 401) {
-        //   dispatch(userActions.logout());
-        // }
-        return response.json();
-      })
-      .then(json => {
-        dispatch(setUserList(photoId, json));
-      });
-  };
-}
-
 // initial state
 
 const initialState = {
@@ -135,8 +105,6 @@ function reducer(state = initialState, action) {
       return applySetToken(state, action);
     case LOGOUT:
       return applyLogout(state, action);
-    case SET_USER_LIST:
-      return applySetUserList(state, action);
     default:
       return state;
   }
@@ -161,22 +129,13 @@ function applyLogout(state, action) {
   };
 }
 
-function applySetUserList(state, action) {
-  const { userList } = action;
-  return {
-    ...state,
-    userList
-  };
-}
-
 // exports
 
 const actionCreators = {
   facebookLogin,
   usernameLogin,
   createAccount,
-  logout,
-  getPhotoLikes
+  logout
 };
 
 export { actionCreators };

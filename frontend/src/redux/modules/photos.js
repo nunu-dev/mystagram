@@ -1,14 +1,14 @@
 // imports
 
-import { actionCreators as userActions } from 'redux/modules/user';
+import { actionCreators as userActions } from "redux/modules/user";
 
 // actions
 
-const SET_FEED = 'SET_FEED';
-const LIKE_PHOTO = 'LIKE_PHOTO';
-const UNLIKE_PHOTO = 'UNLIKE_PHOTO';
-const ADD_COMMENT = 'ADD_COMMENT';
-const DELETE_COMMENT = 'DELETE_COMMENT';
+const SET_FEED = "SET_FEED";
+const LIKE_PHOTO = "LIKE_PHOTO";
+const UNLIKE_PHOTO = "UNLIKE_PHOTO";
+const ADD_COMMENT = "ADD_COMMENT";
+const SET_PHOTO_LIKES = "SET_PHOTO_LIKES";
 
 // action creators
 
@@ -41,11 +41,11 @@ function addComment(photoId, comment) {
   };
 }
 
-function removeComment(photoId, messageId) {
+function setPhotoLikes(photoId, likes) {
   return {
-    type: DELETE_COMMENT,
+    type: SET_PHOTO_LIKES,
     photoId,
-    messageId
+    likes
   };
 }
 
@@ -53,10 +53,8 @@ function removeComment(photoId, messageId) {
 
 function getFeed() {
   return (dispatch, getState) => {
-    const {
-      user: { token }
-    } = getState();
-    fetch('/images/', {
+    const { user: { token } } = getState();
+    fetch("/images/", {
       headers: {
         Authorization: `JWT ${token}`
       }
@@ -76,11 +74,9 @@ function getFeed() {
 function likePhoto(photoId) {
   return (dispatch, getState) => {
     dispatch(doLikePhoto(photoId));
-    const {
-      user: { token }
-    } = getState();
+    const { user: { token } } = getState();
     fetch(`/images/${photoId}/likes/`, {
-      method: 'POST',
+      method: "POST",
       headers: {
         Authorization: `JWT ${token}`
       }
@@ -97,11 +93,9 @@ function likePhoto(photoId) {
 function unlikePhoto(photoId) {
   return (dispatch, getState) => {
     dispatch(doUnlikePhoto(photoId));
-    const {
-      user: { token }
-    } = getState();
+    const { user: { token } } = getState();
     fetch(`/images/${photoId}/unlikes/`, {
-      method: 'DELETE',
+      method: "DELETE",
       headers: {
         Authorization: `JWT ${token}`
       }
@@ -115,16 +109,14 @@ function unlikePhoto(photoId) {
   };
 }
 
-function submitComment(photoId, message) {
+function commentPhoto(photoId, message) {
   return (dispatch, getState) => {
-    const {
-      user: { token }
-    } = getState();
+    const { user: { token } } = getState();
     fetch(`/images/${photoId}/comments/`, {
-      method: 'POST',
+      method: "POST",
       headers: {
         Authorization: `JWT ${token}`,
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({
         message
@@ -140,6 +132,26 @@ function submitComment(photoId, message) {
         if (json.message) {
           dispatch(addComment(photoId, json));
         }
+      });
+  };
+}
+
+function getPhotoLikes(photoId) {
+  return (dispatch, getState) => {
+    const { user: { token } } = getState();
+    fetch(`/images/${photoId}/likes/`, {
+      headers: {
+        Authorization: `JWT ${token}`
+      }
+    })
+      .then(response => {
+        if (response.status === 401) {
+          dispatch(userActions.logout());
+        }
+        return response.json();
+      })
+      .then(json => {
+        dispatch(setPhotoLikes(photoId, json));
       });
   };
 }
@@ -160,6 +172,8 @@ function reducer(state = initialState, action) {
       return applyUnlikePhoto(state, action);
     case ADD_COMMENT:
       return applyAddComment(state, action);
+    case SET_PHOTO_LIKES:
+      return applyPhotoLikes(state, action);
     default:
       return state;
   }
@@ -214,13 +228,29 @@ function applyAddComment(state, action) {
   return { ...state, feed: updatedFeed };
 }
 
+function applyPhotoLikes(state, action) {
+  const { photoId, likes } = action;
+  const { feed } = state;
+  const updatedFeed = feed.map(photo => {
+    if (photo.id === photoId) {
+      return {
+        ...photo,
+        likes
+      };
+    }
+    return photo;
+  });
+  return { ...state, feed: updatedFeed };
+}
+
 // Exports
 
 const actionCreators = {
   getFeed,
   likePhoto,
   unlikePhoto,
-  submitComment
+  commentPhoto,
+  getPhotoLikes
 };
 
 export { actionCreators };
