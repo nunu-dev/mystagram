@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styles from './styles.scss';
+
 const UserRow = (props, context) => (
   <div className={styles.container}>
     <div className={styles.column}>
@@ -21,9 +22,11 @@ const UserRow = (props, context) => (
     </span>
   </div>
 );
+
 UserRow.contextTypes = {
   t: PropTypes.func.isRequired
 };
+
 UserRow.propTypes = {
   user: PropTypes.shape({
     id: PropTypes.number.isRequired,
@@ -35,7 +38,9 @@ UserRow.propTypes = {
   big: PropTypes.bool,
   handleClick: PropTypes.func.isRequired
 };
+
 UserRow.defaultProps = {
   big: false
 };
+
 export default UserRow;
