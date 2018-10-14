@@ -5,6 +5,7 @@ from allauth.account.utils import setup_user_email
 from . import models
 from mystagram.images import serializers as images_serializers
 
+
 class UserProfileSerializer(serializers.ModelSerializer):
 
     images = images_serializers.CountImageSerializer(many=True, read_only=True)
@@ -26,7 +27,10 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'images'
         )
 
+
 class ListUserSerializer(serializers.ModelSerializer):
+
+    following = serializers.SerializerMethodField()
 
     class Meta:
         model = models.User
@@ -34,8 +38,17 @@ class ListUserSerializer(serializers.ModelSerializer):
             'id',
             'profile_image',
             'username',
-            'name'
+            'name',
+            'following'
         )
+
+    def get_following(self, obj):
+        if 'request' in self.context:
+            request = self.context('request')
+            if obj in request.user.following.all():
+                return True
+        return False
+
 
 class SignUpSerializer(RegisterSerializer):
 
@@ -48,7 +61,7 @@ class SignUpSerializer(RegisterSerializer):
             'password1': self.validated_data.get('password1', ''),
             'email': self.validated_data.get('email', '')
         }
-    
+
     def save(self, request):
         adapter = get_adapter()
         user = adapter.new_user(request)
