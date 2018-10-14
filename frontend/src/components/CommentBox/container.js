@@ -7,14 +7,13 @@ class Container extends Component {
     comment: ''
   };
   static propTypes = {
-    photoId: PropTypes.number.isRequire,
-    submitComment: PropTypes.func.isRequire
+    photoId: PropTypes.number.isRequired,
+    submitComment: PropTypes.func.isRequired
   };
   render() {
     return (
       <CommentBox
         {...this.state}
-        {...this.props}
         handleInputChange={this._handleInputChange}
         handleKeyPress={this._handleKeyPress}
       />
@@ -35,8 +34,10 @@ class Container extends Component {
     if (key === 'Enter') {
       event.preventDefault();
       submitComment(comment);
+      this.setState({
+        comment: ''
+      });
     }
-    console.log(key);
   };
 }
 
