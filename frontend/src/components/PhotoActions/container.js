@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import PhotoActions from './presenter';
+import React, { Component } from "react";
+import PhotoActions from "./presenter";
 
 class Container extends Component {
   render() {

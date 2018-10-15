@@ -12,27 +12,23 @@ const Feed = props => {
   }
 };
 
-const LoadingFeed = props => {
-  return (
-    <div className={styles.feed}>
-      <Loading />
-    </div>
-  );
-};
+const LoadingFeed = props => (
+  <div className={styles.feed}>
+    <Loading />
+  </div>
+);
 
-const RenderFeed = props => {
-  return (
-    <div className={styles.feed}>
-      {props.feed.map(post => post.caption)}
-      {props.feed.map(photo => (
-        <FeedPhoto {...photo} key={photo.id} />
-      ))}
-    </div>
-  );
-};
+const RenderFeed = props => (
+  <div className={styles.feed}>
+    {props.feed.map(photo => (
+      <FeedPhoto {...photo} key={photo.id} />
+    ))}
+  </div>
+);
 
 Feed.propTypes = {
-  loading: PropTypes.bool.isRequired
+  loading: PropTypes.bool.isRequired,
+  feed: PropTypes.array
 };
 
 export default Feed;

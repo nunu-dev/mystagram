@@ -1,13 +1,14 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import Feed from './presenter';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import Feed from "./presenter";
 
 class Container extends Component {
   state = {
     loading: true
   };
   static propTypes = {
-    getFeed: PropTypes.func.isRequired
+    getFeed: PropTypes.func.isRequired,
+    feed: PropTypes.array
   };
   componentDidMount() {
     const { getFeed } = this.props;

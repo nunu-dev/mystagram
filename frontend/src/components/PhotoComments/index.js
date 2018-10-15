@@ -1,6 +1,6 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import styles from './styles.scss';
+import React from "react";
+import PropTypes from "prop-types";
+import styles from "./styles.scss";
 
 const PhotoComments = props => (
   <div className={styles.comments}>
@@ -19,7 +19,7 @@ const PhotoComments = props => (
 
 const Comment = props => (
   <li className={styles.comment}>
-    <span className={styles.username}>{props.username}</span>{' '}
+    <span className={styles.username}>{props.username}</span>{" "}
     <span className={styles.message}>{props.comment}</span>
   </li>
 );

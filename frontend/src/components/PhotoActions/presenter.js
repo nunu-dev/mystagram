@@ -8,7 +8,7 @@ const PhotoActions = (props, context) => (
     <div className={styles.icons}>
       <span className={styles.icon} onClick={props.handleHeartClick}>
         {props.isLiked ? (
-          <Ionicon icon="ios-heart" fontSize="28px" color="#EB4859" />
+          <Ionicon icon="ios-heart" fontSize="28px" color="#EB4B59" />
         ) : (
           <Ionicon icon="ios-heart-outline" fontSize="28px" color="black" />
         )}

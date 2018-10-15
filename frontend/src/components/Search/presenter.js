@@ -1,19 +1,19 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import styles from './styles.scss';
-import Loading from 'components/Loading';
-import UserDisplay from 'components/UserDisplay';
-import PhotoDisplay from 'components/PhotoDisplay';
+import React from "react";
+import PropTypes from "prop-types";
+import styles from "./styles.scss";
+import Loading from "components/Loading";
+import UserDisplay from "components/UserDisplay";
+import PhotoDisplay from "components/PhotoDisplay";
 
 const Search = (props, context) => {
   return (
     <div className={styles.search}>
       <div className={styles.section}>
-        <h4 className={styles.title}>{context.t('Users')}</h4>
+        <h4 className={styles.title}>{context.t("Users")}</h4>
         {props.loading && <Loading />}
         {!props.loading &&
           props.userList.length < 1 && (
-            <NotFound text={context.t('Nothing found :(')} />
+            <NotFound text={context.t("Nothing found :(")} />
           )}
         <div className={styles.content}>
           {!props.loading &&
@@ -23,11 +23,11 @@ const Search = (props, context) => {
         </div>
       </div>
       <div className={styles.section}>
-        <h4 className={styles.title}>{context.t('Photos')}</h4>
+        <h4 className={styles.title}>{context.t("Photos")}</h4>
         {props.loading && <Loading />}
         {!props.loading &&
           props.imageList.length < 1 && (
-            <NotFound text={context.t('Nothing found :(')} />
+            <NotFound text={context.t("Nothing found :(")} />
           )}
         <div className={styles.content}>
           {!props.loading &&

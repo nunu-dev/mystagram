@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import FeedPhoto from "./presenter";
+import React, { Component } from 'react';
+import FeedPhoto from './presenter';
 
 class Container extends Component {
   state = {

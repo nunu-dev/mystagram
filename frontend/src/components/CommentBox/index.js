@@ -5,7 +5,7 @@ import { actionCreators as photoActions } from 'redux/modules/photos';
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     submitComment: message => {
-      dispatch(photoActions.submitComment(ownProps.photoId, message));
+      dispatch(photoActions.commentPhoto(ownProps.photoId, message));
     }
   };
 };
